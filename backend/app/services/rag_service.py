@@ -1,34 +1,25 @@
-from sentence_transformers import SentenceTransformer
-import faiss
-import pickle
-import numpy as np
+def retrieve_context(user_query: str):
 
-# Load embedding model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+    with open("app/data/gold_knowledge.txt", "r", encoding="utf-8") as file:
 
-# Load FAISS index
-index = faiss.read_index("app/vector_store/gold_index.faiss")
+        knowledge = file.readlines()
 
-# Load documents
-with open("app/vector_store/documents.pkl", "rb") as f:
-    documents = pickle.load(f)
+    relevant_chunks = []
 
+    query_words = user_query.lower().split()
 
-def retrieve_context(user_query: str, top_k: int = 3):
+    for line in knowledge:
 
-    # Convert query to embedding
-    query_embedding = model.encode([user_query])
+        for word in query_words:
 
-    query_embedding = np.array(query_embedding).astype("float32")
+            if word in line.lower():
 
-    # Search FAISS index
-    distances, indices = index.search(query_embedding, top_k)
+                relevant_chunks.append(line.strip())
 
-    retrieved_docs = []
+                break
 
-    for idx in indices[0]:
+    if not relevant_chunks:
 
-        if idx < len(documents):
-            retrieved_docs.append(documents[idx])
+        relevant_chunks = knowledge[:3]
 
-    return "\n".join(retrieved_docs)
+    return "\n".join(relevant_chunks)
