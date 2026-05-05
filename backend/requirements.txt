@@ -2,8 +2,8 @@ fastapi
 uvicorn
 groq
 sqlalchemy
-sentence-transformers
-faiss-cpu
 numpy
-torch
-transformers
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2
+transformers==4.41.2
+torch==2.2.2
