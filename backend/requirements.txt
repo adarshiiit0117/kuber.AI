@@ -1,9 +1,12 @@
-fastapi
-uvicorn
-groq
-sqlalchemy
-numpy
+fastapi==0.115.0
+uvicorn==0.30.6
+groq==0.11.0
+python-dotenv==1.0.1
+sqlalchemy==2.0.35
+numpy==1.26.4
 faiss-cpu==1.7.4
 sentence-transformers==2.2.2
 transformers==4.41.2
 torch==2.2.2
+scikit-learn==1.5.2
+scipy==1.13.1
