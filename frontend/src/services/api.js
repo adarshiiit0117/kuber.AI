@@ -6,7 +6,7 @@
 import axios from "axios";
 
 // Base URL for the backend
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://kuber-ai-1.onrender.com";
 
 // Create an axios instance with default config
 const api = axios.create({
