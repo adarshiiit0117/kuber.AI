@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+groq
+sqlalchemy
+sentence-transformers
+faiss-cpu
+numpy
+torch
+transformers
