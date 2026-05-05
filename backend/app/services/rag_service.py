@@ -1,25 +1,35 @@
-def retrieve_context(user_query: str):
+from sentence_transformers import SentenceTransformer
+import faiss
+import pickle
+import numpy as np
+import os
 
-    with open("app/data/gold_knowledge.txt", "r", encoding="utf-8") as file:
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-        knowledge = file.readlines()
+INDEX_PATH = os.path.join(BASE_DIR, "vector_store", "gold_index.faiss")
+DOC_PATH = os.path.join(BASE_DIR, "vector_store", "documents.pkl")
 
-    relevant_chunks = []
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    query_words = user_query.lower().split()
+index = faiss.read_index(INDEX_PATH)
 
-    for line in knowledge:
+with open(DOC_PATH, "rb") as f:
+    documents = pickle.load(f)
 
-        for word in query_words:
 
-            if word in line.lower():
+def retrieve_context(user_query: str, top_k: int = 3):
 
-                relevant_chunks.append(line.strip())
+    query_embedding = model.encode([user_query])
 
-                break
+    query_embedding = np.array(query_embedding).astype("float32")
 
-    if not relevant_chunks:
+    distances, indices = index.search(query_embedding, top_k)
 
-        relevant_chunks = knowledge[:3]
+    retrieved_docs = []
 
-    return "\n".join(relevant_chunks)
+    for idx in indices[0]:
+
+        if idx < len(documents):
+            retrieved_docs.append(documents[idx])
+
+    return "\n".join(retrieved_docs)
